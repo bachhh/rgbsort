@@ -26,8 +26,10 @@ import "fmt"
 //
 // 		--order: specify the order for colours, supported values:
 //
-//			hilbert-curve : using a hilbert walk in the colour space to linearize the colour values.
-//			luminosity :
+//			hilbert: using a hilbert walk in the colour space to linearize the colour values.
+//			pointwise :
+//			peano :
+//			zcurve :
 //
 //
 //
@@ -43,16 +45,31 @@ type Colour struct {
 	Blue     uint32
 	Alpha    uint32
 	RawInput string
-	// Space    []float64 // space defines the colour model
+	// defines the colour model
+	Model []float64
 }
+
+// ColourSpace colour space defines a model function that maps Colours object
+// onto n-dimension real coordinate space ( usually [0, 1.0] )
+type ColourSpace func(c *Colour) []float64
 
 // Order defines a total order on the n-dimensional real coordinates,
 //	Returns true if a <= b, false otherwise
 //
 // To check if A and B are equivalance under the order:
 //		Order(a, b) && Order (b, a)
+// Order function should satisfies all the total order properties:
+//		a <= a
+//		(a <= b && b <= a ) <-> a == b
+//		(a <= b && b <= c ) <-> a <= c
+//		for any pair of colours a, b, either a <= b or b <= a
+//
 type Order func(a, b []float64) bool
 
-// ColourSpace colour space defines a model function that maps Colours object
-// onto n-dimension real coordinates ( usually [0, 1.0] )
-type ColourSpace func(c *Colour) []float64
+// Metric a function  that defines the concept of "distance" between any 2 members of a set,
+// and in this space, "distance" between 2 colours
+// Metric function should satisfies all the metric function properties:
+//		d(a,b) == 0 <-> a == b
+//		d(a,b) == d(b,a)
+//		d(x,y) <= d(y,z) + d(z,x)
+type Metric func(a, b []float64) float64
