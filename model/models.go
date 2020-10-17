@@ -1,6 +1,14 @@
-package main
+package model
 
-import "math"
+import (
+	"math"
+
+	"github.com/bachhh/rgbsort/junk"
+)
+
+// ColourSpace colour space defines a model function that maps Colours object
+// onto n-dimension real coordinate space ( usually [0, 1.0] )
+type ColourSpace func(c *Colour) []float64
 
 func RGBa(c *Colour) []float64 {
 	return []float64{float64(c.Red), float64(c.Green), float64(c.Blue), float64(c.Alpha)}
@@ -31,7 +39,7 @@ func CMYK(c *Colour) []float64 {
 
 // Hue calculation
 func Hue(a *Colour) (h float64) {
-	ma, mi := max(a.Red, max(a.Green, a.Blue)), min(a.Red, min(a.Green, a.Blue))
+	ma, mi := junk.MAX(a.Red, junk.MAX(a.Green, a.Blue)), junk.MIN(a.Red, junk.MIN(a.Green, a.Blue))
 	if ma != mi {
 		if ma == a.Red {
 			h = float64(a.Green-a.Blue) / float64(ma-mi)
@@ -49,31 +57,31 @@ func Hue(a *Colour) (h float64) {
 }
 
 func Value(a *Colour) float64 {
-	return float64(max(a.Red, max(a.Green, a.Blue)))
+	return float64(junk.MAX(a.Red, junk.MAX(a.Green, a.Blue)))
 }
 
 // Luma / Lightness
 func Luma(a *Colour) float64 {
-	return float64(max(a.Red, max(a.Green, a.Blue))+min(a.Red, min(a.Green, a.Blue))) / 2
+	return float64(junk.MAX(a.Red, junk.MAX(a.Green, a.Blue))+junk.MIN(a.Red, junk.MIN(a.Green, a.Blue))) / 2
 }
 
 // NOTE:  Saturation is the scale factor dependent on the colour model,
 // the calculations are different between HSL and HSV
 func SatHL(a *Colour) float64 {
-	ma, mi := max(a.Red, max(a.Green, a.Blue)), min(a.Red, min(a.Green, a.Blue))
+	ma, mi := junk.MAX(a.Red, junk.MAX(a.Green, a.Blue)), junk.MIN(a.Red, junk.MIN(a.Green, a.Blue))
 	if ma == mi {
 		return 0
 	}
 
 	l := Luma(a)
-	if lte(l, 1/2) {
+	if junk.LTE(l, 1/2) {
 		return float64(ma-mi) / (2 - 2*l)
 	}
 	return float64(ma-mi) / (2 * l)
 }
 
 func SatHV(a *Colour) float64 {
-	ma, mi := max(a.Red, max(a.Green, a.Blue)), min(a.Red, min(a.Green, a.Blue))
+	ma, mi := junk.MAX(a.Red, junk.MAX(a.Green, a.Blue)), junk.MIN(a.Red, junk.MIN(a.Green, a.Blue))
 	if ma == 0 {
 		return 0
 	}

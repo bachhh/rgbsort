@@ -1,10 +1,21 @@
-package main
+package model
 
 import (
 	"fmt"
-
-	"github.com/google/hilbert"
 )
+
+// Order defines a total order on the n-dimensional real coordinates,
+//	Returns true if a <= b, false otherwise
+//
+// To check if A and B are equivalance under the order:
+//		Order(a, b) && Order (b, a)
+// Order function should satisfies all the total order properties:
+//		a <= a
+//		(a <= b && b <= a ) <-> a == b
+//		(a <= b && b <= c ) <-> a <= c
+//		for any pair of colours a, b, either a <= b or b <= a
+//
+type Order func(a, b []float64) bool
 
 // PointWise define the point-wise total order on the coordinate sapce
 // Given 2 tuples a, b of type (K1, K2, ..., Kn):
@@ -36,7 +47,7 @@ func PointWise(a, b []float64) bool {
 //		- size: size of hypercube ( power of 2 )
 //		- order: order of
 func HilbertPath(dim, size, order int) (HilbertWalk Order, err error) {
-	garden := hilbert.NewHilbert(dim)
+	// garden := hilbert.NewHilbert(dim)
 	return
 }
 
