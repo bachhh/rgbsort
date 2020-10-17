@@ -2,6 +2,8 @@ package model
 
 import (
 	"fmt"
+
+	"github.com/jtejido/hilbert"
 )
 
 // Order defines a total order on the n-dimensional real coordinates,
@@ -47,7 +49,7 @@ func PointWise(a, b []float64) bool {
 //		- size: size of hypercube ( power of 2 )
 //		- order: order of
 func HilbertPath(dim, size, order int) (HilbertWalk Order, err error) {
-	// garden := hilbert.NewHilbert(dim)
+	garden := hilbert.New(5, 2)
 	return
 }
 
